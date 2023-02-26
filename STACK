@@ -1,0 +1,123 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct node{
+    void* dataPtr;
+    struct node* next;
+}NODE;
+
+typedef struct stack{
+    NODE* head;
+    NODE* tail;
+    int cnt;
+    int size; //구조체 안에서는 값 설정X
+
+}STACK;
+
+STACK* makeStack(){
+    //TODO
+    
+    STACK* newSTACK = (STACK*)malloc(sizeof(STACK));
+    newSTACK -> head = NULL;
+    newSTACK -> tail = NULL;
+    newSTACK -> cnt = 0;
+    newSTACK -> size = 100;
+    return newSTACK;
+}
+
+int pushStack(STACK* s, int data){
+    //TODO
+    if (s -> cnt >= s -> size) {
+        return 0; //When the stack size is exceeded
+    }
+
+    NODE* newNode = (NODE*)malloc(sizeof(NODE));
+    newNode -> dataPtr = (int*)malloc(sizeof(int));
+    *(int*)newNode -> dataPtr = data;
+    newNode -> next = NULL;
+
+    if(s -> cnt == 0) { //Stack is empty
+        s -> head = newNode; //head == tail
+        s -> tail = newNode;
+        (s -> cnt)++;
+    }
+    else {
+        newNode -> next = s -> head; //The next node pointed to by new node is the current head
+        s -> head = newNode;
+        (s -> cnt)++;
+    }
+
+    return 1;
+}
+
+int size(STACK* s) {
+    return s -> cnt;
+}
+
+int top(STACK* s) {
+    return s -> head;
+}
+
+int popStack(STACK* s){
+    // TODO
+    if(s -> cnt == 0) {
+        return 0;
+    }
+
+    int res = *(int*)(s->head->dataPtr);
+
+    if(s -> cnt == 1) {
+        free(s->head->dataPtr);
+        free(s->head);
+        s->cnt -= 1;
+        return res;
+    }
+
+    NODE* delet = s->head;
+    s -> head = s -> head -> next;
+    free(delet->dataPtr);
+    free(delet);
+
+
+    s -> cnt = s -> cnt - 1;
+
+    return res;  
+}
+
+int isEmpty(STACK* s){
+    return s->cnt <= 0;
+}
+
+int main(){
+
+    int N;
+    int num;
+    char str[10];
+    STACK stack;
+    
+    for(int i = 0; i < N; i++) {
+        scanf("%s", str);
+
+        if(!strcmp(str, "push")) {
+            scanf("%d", &num);
+            push(&stack, num);
+        }
+
+        else if(!strcmp(str, "pop")) {
+            printf("%d\n", Popstack(&stack));
+        }
+        
+        else if(!strcmp(str, "empty")) {
+            printf("%d\n", isEmpty(&stack));
+        }
+
+        else if(!strcmp(str, "size")) {
+            printf("%d\n", Size(&stack));
+        }
+
+        else if(!strcmp(str, "top")) {
+            printf("%d\n", top(&stack));
+        }
+    }
+    return 0;
+}
